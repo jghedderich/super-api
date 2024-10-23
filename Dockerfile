@@ -7,7 +7,7 @@ WORKDIR /app
 RUN ls
 
 FROM base AS prod-deps
-RUN pnpm install -P
+RUN pnpm install
 
 RUN pnpm run build
 CMD ["pnpm", "start"]
