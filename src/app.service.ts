@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Directory } from './directory.entity';
 import { Repository } from 'typeorm';
 import { CreateDirectoryDTO, UpdateDirectoryDTO } from './directory.dto';
 import { randomUUID } from 'node:crypto';
+
+const emailRegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
 @Injectable()
 export class AppService {
@@ -12,7 +14,10 @@ export class AppService {
     private readonly directoryRepository: Repository<Directory>,
   ) {}
 
-  create(data: CreateDirectoryDTO) {
+  async create(data: CreateDirectoryDTO) {
+    const notEmail = data.emails.find(e => !emailRegExp.test(e))
+        if (notEmail)
+            throw new HttpException('The email: ' + notEmail + ' is not an email', 400)
     return this.directoryRepository.insert(
       this.directoryRepository.create({
         ...data,
@@ -22,6 +27,9 @@ export class AppService {
   }
 
   update(id: string, data: UpdateDirectoryDTO) {
+    const notEmail = data.emails?.find(e => !emailRegExp.test(e))
+        if (notEmail)
+            throw new HttpException('The email: ' + notEmail + ' is not an email', 400)
     return this.directoryRepository.update(
       {
         id,

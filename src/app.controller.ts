@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
@@ -53,10 +54,10 @@ export class AppController {
     return this.appService.getById(id);
   }
 
-  @Get('directories/:page/:perPage')
+  @Get('directories')
   async paginated(
-    @Param('page', ParseIntPipe) page: number,
-    @Param('perPage', ParseIntPipe) perPage: number,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('perPage', ParseIntPipe) perPage: number,
     @Origin() origin: string,
   ) {
     const { results, nextPage, previousPage, count } =

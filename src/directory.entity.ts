@@ -8,7 +8,6 @@ export class Directory {
   id: string;
   @Column({
     type: 'varchar',
-    unique: true,
   })
   name: string;
   @Column('varchar', {
