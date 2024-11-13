@@ -1,0 +1,38 @@
+volumes:
+ pg_data:
+   driver: local
+   driver_opts:
+     type: "nfs"
+     o: "addr=nfs01,rw"
+     device: ":/data/docker-vols/grupo9/postgres_data"
+
+networks:
+ app:
+   driver: overlay
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: data
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+        - app
+
+  app:
+    image: danixl30/super-api:latest
+    ports:
+      - "9014:9014"
+    environment:
+      PORT: "9014"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_NAME: data
+    networks:
+        - app
